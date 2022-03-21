@@ -7,12 +7,29 @@ const exphbs  = require('express-handlebars');
 app.engine('handlebars', exphbs.engine({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
+// API wrapper
+const Tenor = require('tenorjs').client({
+  'Key': '88VITW5WZ5WW',
+  'Locale': 'en_US',
+  'Filter': 'high',
+})
+
 // Routes
 app.get('/', (req, res) => {
-  // const gifUrl = 'https://media1.tenor.com/images/561c988433b8d71d378c9ccb4b719b6c/tenor.gif?itemid=10058245'
-  console.log(req.query);
-  res.render('home');
-});
+  // Handle the home page when we haven't queried yet
+  term = ""
+  if (req.query.term) {
+    term = req.query.term
+  }
+  // Tenor.search.Query("KEYWORD", "LIMIT")
+  Tenor.Search.Query(term, "10")
+    .then(response => {
+      //store gifs
+      const gifs = response;
+      //pass the gifs as an obj into the homepage
+      res.render('home', { gifs })
+    }).catch(console.error)
+})
 
 app.get('/greetings/:name', (req, res) => {
   // grab name from the path
