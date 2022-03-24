@@ -1,6 +1,7 @@
 // server
 const express = require('express');
 const app = express();
+app.use(express.static('public'));
 
 // Middleware
 const exphbs  = require('express-handlebars');
@@ -36,7 +37,9 @@ app.get('/greetings/:name', (req, res) => {
   const name = req.params.name;
   res.render('greetings', { name });
 })
+
 // Start server
 app.listen(3000, () => {
   console.log('Gif Search listening on port localhost:3000!');
 });
+
